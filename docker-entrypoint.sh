@@ -16,4 +16,4 @@ else
     echo "Already initialized, skipping."
 fi
 
-exec devpi-server --host="${DEVPISERVER_HOST}" --port="${DEVPISERVER_PORT}" $@
+exec devpi-server --restrict-modify root --host="${DEVPISERVER_HOST}" --port="${DEVPISERVER_PORT}" $@
