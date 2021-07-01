@@ -1,0 +1,23 @@
+---
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us.gcr.io/$PROJECT_ID/devpi:$COMMIT_SHA",
+        ".",
+      ]
+
+  # Only tag "latest" when on master
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args:
+      - "-e"
+      - "-c"
+      - |
+        [ "$BRANCH_NAME" != "master" ] && exit 0
+        docker tag us.gcr.io/$PROJECT_ID/devpi:$COMMIT_SHA us.gcr.io/$PROJECT_ID/devpi:latest
+        docker push us.gcr.io/$PROJECT_ID/devpi:latest
+images: ["us.gcr.io/$PROJECT_ID/devpi:$COMMIT_SHA"]
+timeout: 600s
