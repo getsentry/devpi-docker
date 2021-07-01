@@ -1,20 +1,6 @@
 #!/usr/bin/env sh
 set -eu
 
-set_password() {
-    expect <<-'EOF'
-        set timeout -1
-
-        spawn /usr/local/bin/devpi-passwd root
-
-        expect "enter password" { send "$env(DEVPISERVER_PASSWORD)\r" }
-        expect "repeat password" { send "$env(DEVPISERVER_PASSWORD)\r" }
-
-        expect "committed: keys:"
-        wait
-EOF
-}
-
 if [ -z "${DEVPISERVER_HOST:-}" ]; then
     export DEVPISERVER_HOST="0.0.0.0"
 fi
@@ -30,10 +16,7 @@ fi
 
 if [ ! -f "${DEVPISERVER_SERVERDIR:-}/.nodeinfo" ]; then
     echo "Initializing devpi..."
-    devpi-init
-
-    # Set the root password
-    set_password
+    devpi-init --root-passwd "${DEVPISERVER_PASSWORD}"
 else
     echo "Already initialized, skipping."
 fi
